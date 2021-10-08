@@ -153,7 +153,7 @@ export function generateAll(schema, depthLimit = 100, dedupe = getFieldArgsDict)
 			`${String(description).toLowerCase()}s`;
 		result[kind] = {};
 		Object.entries(obj).forEach(([type, field]) => {
-			result[kind][type] = generateQuery({ field, parentName: description, depthLimit, dedupe });
+			result[kind][type] = generateQuery({ field, kind: description, parentName: description, depthLimit, dedupe });
 		});
 	};
 
