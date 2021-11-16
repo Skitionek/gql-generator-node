@@ -1,6 +1,6 @@
 {
   "name": "gql-generator-node",
-  "version": "2.1.15",
+  "version": "2.1.16",
   "description": "Generate queries as simple function of schema.",
   "main": "lib/index.js",
   "scripts": {
