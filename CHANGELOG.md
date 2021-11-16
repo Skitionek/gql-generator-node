@@ -1,3 +1,10 @@
+## [2.1.16](https://github.com/Skitionek/gql-generator-node/compare/v2.1.15...v2.1.16) (2021-11-16)
+
+
+### Bug Fixes
+
+* **CI:** disable teams notify ([461f9e9](https://github.com/Skitionek/gql-generator-node/commit/461f9e9e76c9fe16b8c7e04c52c134c57adc4d91))
+
 ## [2.1.15](https://github.com/Skitionek/gql-generator-node/compare/v2.1.14...v2.1.15) (2020-04-30)
 
 
