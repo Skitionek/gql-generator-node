@@ -312,7 +312,7 @@ It not only greatly simplifies testing which might be now automated and batched 
 
 
 ## Notes
-
+ 
 - Variable names are derived from argument names, so variables generated from multiple occurrences of the same argument name must be deduped. By default, subtree arguments are given path prefix (ex. can be found in dedupe description).
 
 ## Credits
