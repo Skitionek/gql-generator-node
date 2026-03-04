@@ -38,6 +38,14 @@ export const generateQuery = ({
 		                                path = []
 	                                }) => {
 		let curType = field.type;
+
+		if (curType === undefined) {
+			return {
+				queryStr: `${'    '.repeat(curDepth)}${field.name}`,
+				argumentsDict
+			};
+		}
+
 		while (curType.ofType) curType = curType.ofType;
 
 		let queryStr = '';

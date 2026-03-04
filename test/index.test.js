@@ -154,3 +154,14 @@ it('check warnings for no mutations, query, subscription in schema', async () =>
 		generateAll(schemaWithoutMutation)
 	).toMatchSnapshot()
 );
+
+it('should return field name when field has no type (type is undefined)', async () =>
+	expect(
+		generateQuery({
+			field: {
+				name: 'untypedField',
+				args: []
+			}
+		})
+	).toMatchSnapshot()
+);
