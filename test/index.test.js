@@ -122,6 +122,19 @@ it('check field generator with skeleton - multiple fields with same query parame
 	).toMatchSnapshot()
 );
 
+it('check field generator with skeleton - true expands all sub-fields', async () =>
+	expect(
+		generateQuery({
+			field: schema
+				.getQueryType()
+				.getFields().user,
+			skeleton: {
+				context: true
+			}
+		})
+	).toMatchSnapshot()
+);
+
 it('check field generator for non-empty array ([]!)', async () =>
 	expect(
 		generateQuery({
