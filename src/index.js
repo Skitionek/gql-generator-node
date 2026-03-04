@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { getArgsToVarsStr, getFieldArgsDict, getVarsToTypesStr, moduleConsole } from "./utils";
 
 /**
