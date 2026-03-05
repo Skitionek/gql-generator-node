@@ -142,3 +142,9 @@ exports[`check field generator with skeleton 1`] = `
 `;
 
 exports[`check warnings for no mutations, query, subscription in schema 1`] = `Object {}`;
+
+exports[`should return field name when field has no type (type is undefined) 1`] = `
+"query untypedField{
+    untypedField
+}"
+`;
