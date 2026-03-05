@@ -65,7 +65,7 @@
     "jest-summary-reporter": "0.0.2",
     "jest-transform-graphql": "^2.1.0",
     "mocha": "^10.2.0",
-    "nodemon": "^1.19.1",
+    "nodemon": "^3.1.14",
     "semantic-release": "^21.0.1",
     "should": "^13.2.1"
   },
