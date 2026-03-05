@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`check field generator 1`] = `
 "query user($user_context_user_details_region_language: String, $user_details_region_language: String, $id: Int!){
@@ -141,7 +141,7 @@ exports[`check field generator with skeleton 1`] = `
 }"
 `;
 
-exports[`check warnings for no mutations, query, subscription in schema 1`] = `Object {}`;
+exports[`check warnings for no mutations, query, subscription in schema 1`] = `{}`;
 
 exports[`should return field name when field has no type (type is undefined) 1`] = `
 "query untypedField{
