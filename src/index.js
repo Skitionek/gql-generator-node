@@ -49,7 +49,7 @@ export const generateQuery = ({
 			crossReferenceKeyList.push(crossReferenceKey);
 			const children = curType.getFields();
 			childQuery = Object.entries(children);
-			if (skeleton) {
+			if (skeleton && typeof skeleton === 'object') {
 				const skeletonKeys = Object.keys(skeleton);
 				childQuery = childQuery
 					.filter(([key]) => skeletonKeys.indexOf(key) !== -1)

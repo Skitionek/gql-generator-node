@@ -93,6 +93,30 @@ exports[`check field generator with skeleton - nested types 1`] = `
 }"
 `;
 
+exports[`check field generator with skeleton - true expands all sub-fields 1`] = `
+"query user($user_context_user_details_region_language: String, $id: Int!){
+    user(id: $id){
+        context{
+            user{
+                id
+                username
+                email
+                createdAt
+                details{
+                    ... on Guest {
+                        region(language: $user_context_user_details_region_language)
+                    }
+                    ... on Member {
+                        address
+                    }
+                }
+            }
+            domain
+        }
+    }
+}"
+`;
+
 exports[`check field generator with skeleton - unions 1`] = `
 "query user($user_details_region_language: String, $id: Int!){
     user(id: $id){
