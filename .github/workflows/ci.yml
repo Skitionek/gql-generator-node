@@ -36,7 +36,7 @@ jobs:
       - name: Release
         id: release
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BEFORE_VERSION=$(node -p "require('./package.json').version")
@@ -47,6 +47,14 @@ jobs:
           else
             echo "new_release_published=false" >> $GITHUB_OUTPUT
           fi
+      - name: Build
+        if: steps.release.outputs.new_release_published == 'true'
+        run: npm run build
+      - name: Publish to npm
+        if: steps.release.outputs.new_release_published == 'true'
+        run: npm publish --access public --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Setup Node.js for GitHub Package Registry
         if: steps.release.outputs.new_release_published == 'true'
         uses: actions/setup-node@v4

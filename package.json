@@ -195,13 +195,15 @@
       [
         "@semantic-release/npm",
         {
-          "npmPublish": true
+          "npmPublish": false
         }
       ],
       "@semantic-release/changelog",
       "@semantic-release/github",
       "@semantic-release/git"
     ],
-    "branch": "master"
+    "branches": [
+      "master"
+    ]
   }
 }
