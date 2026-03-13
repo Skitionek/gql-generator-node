@@ -18,6 +18,11 @@ jobs:
     needs: build
     name: release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,13 +30,40 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies
         run: npm ci
       - name: Release
+        id: release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: |
+          BEFORE_VERSION=$(node -p "require('./package.json').version")
+          npx semantic-release
+          AFTER_VERSION=$(node -p "require('./package.json').version")
+          if [ "$BEFORE_VERSION" != "$AFTER_VERSION" ]; then
+            echo "new_release_published=true" >> $GITHUB_OUTPUT
+          else
+            echo "new_release_published=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Setup Node.js for GitHub Package Registry
+        if: steps.release.outputs.new_release_published == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: 'https://npm.pkg.github.com'
+      - name: Publish to GitHub Package Registry
+        # GitHub Packages requires a scoped package name (@owner/name).
+        # The npm registry uses the unscoped name; only the name is changed here.
+        if: steps.release.outputs.new_release_published == 'true'
+        run: |
+          ORIGINAL_NAME=$(node -p "require('./package.json').name")
+          npm pkg set name="@skitionek/gql-generator-node"
+          npm publish --ignore-scripts
+          npm pkg set name="$ORIGINAL_NAME"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 #       - name: Notify Microsoft Teams
 #         uses: Skitionek/notify-microsoft-teams@master
