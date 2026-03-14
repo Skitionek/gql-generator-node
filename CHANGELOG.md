@@ -1,3 +1,10 @@
+## [2.1.18](https://github.com/Skitionek/gql-generator-node/compare/v2.1.17...v2.1.18) (2026-03-14)
+
+
+### Bug Fixes
+
+* add rimraf as devDependency ([#53](https://github.com/Skitionek/gql-generator-node/issues/53)) ([f856ab3](https://github.com/Skitionek/gql-generator-node/commit/f856ab3eda90c188bb8bdb4620235d7289d86a7c))
+
 ## [2.1.17](https://github.com/Skitionek/gql-generator-node/compare/v2.1.16...v2.1.17) (2026-03-14)
 
 
