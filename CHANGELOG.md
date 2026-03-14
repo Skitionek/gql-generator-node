@@ -1,3 +1,10 @@
+## [2.1.17](https://github.com/Skitionek/gql-generator-node/compare/v2.1.16...v2.1.17) (2026-03-14)
+
+
+### Bug Fixes
+
+* Add id-token permission to CI workflow ([7879cfb](https://github.com/Skitionek/gql-generator-node/commit/7879cfb226390dd38c6f7e4a8dd294d03a59231e))
+
 ## [2.1.16](https://github.com/Skitionek/gql-generator-node/compare/v2.1.15...v2.1.16) (2021-11-16)
 
 
