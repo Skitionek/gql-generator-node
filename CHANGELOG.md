@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/Skitionek/gql-generator-node/compare/v2.2.0...v2.3.0) (2026-03-27)
+
+
+### Features
+
+* Add GitHub Pages demo (paste schema → generate example queries) ([#57](https://github.com/Skitionek/gql-generator-node/issues/57)) ([0bd85c5](https://github.com/Skitionek/gql-generator-node/commit/0bd85c5dd70c3b7fc0f68911c836b14b8e2a5553))
+
 # [2.2.0](https://github.com/Skitionek/gql-generator-node/compare/v2.1.18...v2.2.0) (2026-03-27)
 
 
