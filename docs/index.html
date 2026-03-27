@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>GQL Generator Node – Live Demo</title>
+	<style>
+		:root {
+			--bg: #0f1117;
+			--surface: #1a1d27;
+			--surface2: #22263a;
+			--border: #2e3348;
+			--accent: #6c8ef5;
+			--accent-hover: #8ba4ff;
+			--danger: #e05252;
+			--success: #4ade80;
+			--text: #e2e6f3;
+			--text-muted: #8890ac;
+			--code-bg: #12151f;
+			--tab-active: #6c8ef5;
+			--radius: 8px;
+			--font-sans: system-ui, -apple-system, sans-serif;
+			--font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+		}
+
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+
+		html, body {
+			height: 100%;
+			font-family: var(--font-sans);
+			background: var(--bg);
+			color: var(--text);
+			font-size: 14px;
+		}
+
+		/* ── Layout ── */
+		.app {
+			display: flex;
+			flex-direction: column;
+			height: 100vh;
+			overflow: hidden;
+		}
+
+		header {
+			padding: 14px 24px;
+			background: var(--surface);
+			border-bottom: 1px solid var(--border);
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			flex-shrink: 0;
+		}
+
+		header h1 {
+			font-size: 18px;
+			font-weight: 700;
+			color: var(--accent);
+		}
+
+		header p {
+			color: var(--text-muted);
+			font-size: 13px;
+		}
+
+		header a {
+			color: var(--accent);
+			text-decoration: none;
+			font-size: 13px;
+			margin-left: auto;
+		}
+
+		header a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+		.main {
+			display: flex;
+			flex: 1;
+			overflow: hidden;
+		}
+
+		/* ── Left panel ── */
+		.panel-left {
+			width: 42%;
+			min-width: 300px;
+			display: flex;
+			flex-direction: column;
+			border-right: 1px solid var(--border);
+			overflow: hidden;
+		}
+
+		.panel-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 10px 16px;
+			background: var(--surface);
+			border-bottom: 1px solid var(--border);
+			flex-shrink: 0;
+		}
+
+		.panel-header span {
+			font-size: 12px;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: .08em;
+			color: var(--text-muted);
+		}
+
+		.depth-control {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-size: 12px;
+			color: var(--text-muted);
+		}
+
+		.depth-control input {
+			width: 52px;
+			background: var(--surface2);
+			border: 1px solid var(--border);
+			color: var(--text);
+			border-radius: 4px;
+			padding: 3px 6px;
+			font-size: 12px;
+			font-family: var(--font-mono);
+			text-align: center;
+		}
+
+		.depth-control input:focus {
+			outline: none;
+			border-color: var(--accent);
+		}
+
+		#schema-input {
+			flex: 1;
+			resize: none;
+			border: none;
+			outline: none;
+			background: var(--code-bg);
+			color: var(--text);
+			font-family: var(--font-mono);
+			font-size: 13px;
+			line-height: 1.6;
+			padding: 16px;
+			tab-size: 2;
+		}
+
+		.generate-bar {
+			padding: 12px 16px;
+			background: var(--surface);
+			border-top: 1px solid var(--border);
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			flex-shrink: 0;
+		}
+
+		#generate-btn {
+			background: var(--accent);
+			color: #fff;
+			border: none;
+			border-radius: var(--radius);
+			padding: 8px 22px;
+			font-size: 14px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: background .15s;
+		}
+
+		#generate-btn:hover { background: var(--accent-hover); }
+		#generate-btn:active { opacity: .85; }
+
+		#status-msg {
+			font-size: 12px;
+			color: var(--text-muted);
+		}
+
+		/* ── Right panel ── */
+		.panel-right {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+		}
+
+		.tabs {
+			display: flex;
+			background: var(--surface);
+			border-bottom: 1px solid var(--border);
+			flex-shrink: 0;
+		}
+
+		.tab-btn {
+			background: none;
+			border: none;
+			color: var(--text-muted);
+			padding: 10px 20px;
+			font-size: 13px;
+			font-weight: 500;
+			cursor: pointer;
+			border-bottom: 2px solid transparent;
+			transition: color .15s, border-color .15s;
+		}
+
+		.tab-btn:hover { color: var(--text); }
+
+		.tab-btn.active {
+			color: var(--tab-active);
+			border-bottom-color: var(--tab-active);
+		}
+
+		.tab-badge {
+			display: inline-block;
+			background: var(--surface2);
+			color: var(--text-muted);
+			border-radius: 10px;
+			padding: 1px 7px;
+			font-size: 11px;
+			margin-left: 6px;
+			vertical-align: middle;
+		}
+
+		.tab-btn.active .tab-badge {
+			background: var(--accent);
+			color: #fff;
+		}
+
+		.tab-content {
+			display: none;
+			flex: 1;
+			overflow-y: auto;
+			padding: 16px;
+		}
+
+		.tab-content.active { display: flex; flex-direction: column; gap: 12px; }
+
+		/* ── Query cards ── */
+		.query-card {
+			background: var(--surface);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			overflow: hidden;
+		}
+
+		.query-card-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 8px 14px;
+			background: var(--surface2);
+			border-bottom: 1px solid var(--border);
+		}
+
+		.query-name {
+			font-family: var(--font-mono);
+			font-size: 13px;
+			font-weight: 600;
+			color: var(--accent);
+		}
+
+		.copy-btn {
+			background: none;
+			border: 1px solid var(--border);
+			color: var(--text-muted);
+			border-radius: 4px;
+			padding: 3px 10px;
+			font-size: 11px;
+			cursor: pointer;
+			transition: border-color .15s, color .15s;
+		}
+
+		.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+		.copy-btn.copied { border-color: var(--success); color: var(--success); }
+
+		.query-code {
+			margin: 0;
+			padding: 14px 16px;
+			background: var(--code-bg);
+			font-family: var(--font-mono);
+			font-size: 12.5px;
+			line-height: 1.65;
+			color: var(--text);
+			white-space: pre;
+			overflow-x: auto;
+		}
+
+		/* ── Empty/error states ── */
+		.empty-state {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			flex: 1;
+			color: var(--text-muted);
+			gap: 10px;
+			padding: 40px;
+			text-align: center;
+		}
+
+		.empty-state svg { opacity: .4; }
+		.empty-state p { font-size: 14px; }
+		.empty-state small { font-size: 12px; opacity: .7; }
+
+		.error-banner {
+			display: none;
+			margin: 0 16px 0;
+			background: rgba(224, 82, 82, .12);
+			border: 1px solid var(--danger);
+			border-radius: var(--radius);
+			padding: 10px 14px;
+			color: var(--danger);
+			font-size: 13px;
+			font-family: var(--font-mono);
+			flex-shrink: 0;
+		}
+
+		.error-banner.visible { display: block; }
+
+		/* ── Scrollbar ── */
+		::-webkit-scrollbar { width: 6px; height: 6px; }
+		::-webkit-scrollbar-track { background: transparent; }
+		::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+		::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+		/* ── Responsive ── */
+		@media (max-width: 720px) {
+			.main { flex-direction: column; }
+			.panel-left { width: 100%; min-width: unset; border-right: none; border-bottom: 1px solid var(--border); height: 45vh; }
+			#schema-input { height: calc(45vh - 120px); flex: unset; }
+		}
+	</style>
+</head>
+<body>
+<div class="app">
+	<header>
+		<h1>GQL Generator Node</h1>
+		<p>Paste a GraphQL schema → get example queries, mutations &amp; subscriptions</p>
+		<a href="https://github.com/Skitionek/gql-generator-node" target="_blank" rel="noopener">
+			GitHub ↗
+		</a>
+	</header>
+
+	<div class="main">
+		<!-- Left: schema input -->
+		<div class="panel-left">
+			<div class="panel-header">
+				<span>GraphQL Schema (SDL)</span>
+				<div class="depth-control">
+					<label for="depth-limit">Depth limit</label>
+					<input id="depth-limit" type="number" value="100" min="1" max="999">
+				</div>
+			</div>
+			<textarea id="schema-input" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off">type Query {
+    user(id: Int!): User!
+    users: [User]!
+}
+
+type Mutation {
+    signup(
+        email: String!
+        username: String!
+        password: String!
+    ): UserToken!
+
+    signin(
+        email: String!
+        password: String!
+    ): String!
+
+    setConfig(
+        prefs: PrefsInput
+    ): Config!
+}
+
+input PrefsInput {
+    language: String!
+}
+
+type Config {
+    language: String!
+    level(domain: String!): Int!
+    lastSeen(domain: String!): Int!
+    theme(domain: String!): Int!
+}
+
+type Subscription {
+    UserUpdated(UserId: Int!): User
+}
+
+type UserToken {
+    token: String!
+    user: User!
+}
+
+type User {
+    id: Int!
+    username: String!
+    email: String!
+    createdAt: String!
+    context: Context!
+    details: UserDetails!
+}
+
+union UserDetails = Guest | Member
+
+type Guest {
+    region(language: String): String!
+}
+
+type Member {
+    address: String!
+}
+
+type Context {
+    user: User! # Circular ref
+    domain: String!
+}</textarea>
+
+			<div id="error-banner" class="error-banner"></div>
+
+			<div class="generate-bar">
+				<button id="generate-btn">⚡ Generate</button>
+				<span id="status-msg"></span>
+			</div>
+		</div>
+
+		<!-- Right: generated output -->
+		<div class="panel-right">
+			<div class="tabs">
+				<button class="tab-btn active" data-tab="queries">
+					Queries<span class="tab-badge" id="badge-queries">0</span>
+				</button>
+				<button class="tab-btn" data-tab="mutations">
+					Mutations<span class="tab-badge" id="badge-mutations">0</span>
+				</button>
+				<button class="tab-btn" data-tab="subscriptions">
+					Subscriptions<span class="tab-badge" id="badge-subscriptions">0</span>
+				</button>
+			</div>
+
+			<div id="tab-queries" class="tab-content active">
+				<div class="empty-state">
+					<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+						<path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/>
+					</svg>
+					<p>Click <strong>⚡ Generate</strong> to see queries here</p>
+					<small>Edit the schema on the left, then click Generate</small>
+				</div>
+			</div>
+			<div id="tab-mutations" class="tab-content">
+				<div class="empty-state">
+					<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+						<path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/>
+					</svg>
+					<p>Click <strong>⚡ Generate</strong> to see mutations here</p>
+				</div>
+			</div>
+			<div id="tab-subscriptions" class="tab-content">
+				<div class="empty-state">
+					<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+						<path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/>
+					</svg>
+					<p>Click <strong>⚡ Generate</strong> to see subscriptions here</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="module">
+	import { buildSchema } from 'https://esm.sh/graphql@16';
+
+	// ── Utility functions (ported from src/utils.js) ──────────────────────────
+
+	const getFieldArgsDict = (field, duplicateArgCounts, allArgsDict = {}, path) =>
+		field.args.reduce((o, arg) => {
+			const arg_name = `${path.join('_')}_${field.name}_${arg.name}`;
+			if (arg_name in duplicateArgCounts) {
+				const index = duplicateArgCounts[arg_name] + 1;
+				duplicateArgCounts[arg_name] = index;
+				o[`${arg_name}${index}`] = arg;
+			} else if (allArgsDict[arg_name]) {
+				duplicateArgCounts[arg_name] = 1;
+				o[arg_name] = arg;
+			} else if (!path.length) {
+				o[arg.name] = arg;
+			} else {
+				o[arg_name] = arg;
+			}
+			return o;
+		}, {});
+
+	const getArgsToVarsStr = dict =>
+		Object.entries(dict)
+			.map(([varName, arg]) => `${arg.name}: $${varName}`)
+			.join(', ');
+
+	const getVarsToTypesStr = dict =>
+		Object.entries(dict)
+			.map(([varName, arg]) => `$${varName}: ${arg.type}`)
+			.join(', ');
+
+	// ── Core generator (ported from src/index.js) ────────────────────────────
+
+	const generateQuery = ({
+		field: rootField,
+		skeleton: rootSkeleton,
+		kind = 'Query',
+		depthLimit = 100,
+		dedupe = getFieldArgsDict
+	}) => {
+		const generateQueryRecursive = ({
+			field,
+			skeleton,
+			parentName,
+			argumentsDict = {},
+			duplicateArgCounts = {},
+			crossReferenceKeyList = [],
+			curDepth = 1,
+			path = []
+		}) => {
+			let curType = field.type;
+
+			if (curType === undefined) {
+				return {
+					queryStr: `${'    '.repeat(curDepth)}${field.name}`,
+					argumentsDict
+				};
+			}
+
+			while (curType.ofType) curType = curType.ofType;
+
+			let queryStr = '';
+			let childQuery = '';
+
+			if (curType.getFields) {
+				const crossReferenceKey = `${parentName}To${field.name}Key`;
+				if (crossReferenceKeyList.includes(crossReferenceKey) || curDepth > depthLimit) return '';
+				crossReferenceKeyList.push(crossReferenceKey);
+				const children = curType.getFields();
+				childQuery = Object.entries(children);
+				if (skeleton && typeof skeleton === 'object') {
+					const skeletonKeys = Object.keys(skeleton);
+					childQuery = childQuery.filter(([key]) => skeletonKeys.includes(key));
+				} else skeleton = {};
+				childQuery = childQuery
+					.map(([key, childField]) => generateQueryRecursive({
+						field: childField,
+						skeleton: skeleton[key],
+						parentName: field.name,
+						argumentsDict,
+						duplicateArgCounts,
+						crossReferenceKeyList,
+						curDepth: curDepth + 1,
+						path: path.concat(field.name)
+					}).queryStr)
+					.filter(cur => cur)
+					.join('\n');
+			}
+
+			if (!(curType.getFields && !childQuery)) {
+				queryStr = `${'    '.repeat(curDepth)}${field.name}`;
+				if (field.args.length > 0) {
+					const dict = dedupe(field, duplicateArgCounts, argumentsDict, path);
+					Object.assign(argumentsDict, dict);
+					queryStr += `(${getArgsToVarsStr(dict)})`;
+				}
+				if (childQuery) {
+					queryStr += `{\n${childQuery}\n${'    '.repeat(curDepth)}}`;
+				}
+			}
+
+			/* Union types */
+			if (curType.astNode && curType.astNode.kind === 'UnionTypeDefinition') {
+				const types = curType.getTypes();
+				if (types && types.length) {
+					const indent = `${'    '.repeat(curDepth)}`;
+					const fragIndent = `${'    '.repeat(curDepth + 1)}`;
+					queryStr += '{\n';
+					types.forEach(type => {
+						let unionChildQuery = Object.entries(type.getFields());
+						if (skeleton && Object.keys(skeleton).length) {
+							const skeletonKeys = Object.keys(skeleton);
+							unionChildQuery = unionChildQuery.filter(([key]) => skeletonKeys.includes(key));
+						} else skeleton = {};
+						unionChildQuery = unionChildQuery
+							.map(([key, childField]) => generateQueryRecursive({
+								field: childField,
+								skeleton: skeleton[key],
+								parentName: field.name,
+								argumentsDict,
+								duplicateArgCounts,
+								crossReferenceKeyList,
+								curDepth: curDepth + 2,
+								path: path.concat(field.name)
+							}).queryStr)
+							.filter(cur => cur)
+							.join('\n');
+						queryStr += `${fragIndent}... on ${type.name} {\n${unionChildQuery}\n${fragIndent}}\n`;
+					});
+					queryStr += `${indent}}`;
+				}
+			}
+
+			return { queryStr, argumentsDict };
+		};
+
+		const queryResult = generateQueryRecursive({
+			field: rootField,
+			skeleton: rootSkeleton,
+			parentName: kind
+		});
+
+		const varsToTypesStr = getVarsToTypesStr(queryResult.argumentsDict);
+		const query = queryResult.queryStr;
+		return `${kind.toLowerCase()} ${rootField.name}${varsToTypesStr ? `(${varsToTypesStr})` : ''}{\n${query}\n}`;
+	};
+
+	function generateAll(schema, depthLimit = 100) {
+		const result = {};
+		const QUERY_KINDS_MAP = { Query: 'queries', Mutation: 'mutations', Subscription: 'subscriptions' };
+
+		const addToResult = (obj, description) => {
+			const kind = QUERY_KINDS_MAP[description] || `${String(description).toLowerCase()}s`;
+			result[kind] = {};
+			Object.entries(obj).forEach(([type, field]) => {
+				result[kind][type] = generateQuery({ field, kind: description, depthLimit });
+			});
+		};
+
+		if (schema.getMutationType()) addToResult(schema.getMutationType().getFields(), 'Mutation');
+		if (schema.getQueryType()) addToResult(schema.getQueryType().getFields(), 'Query');
+		if (schema.getSubscriptionType()) addToResult(schema.getSubscriptionType().getFields(), 'Subscription');
+
+		return result;
+	}
+
+	// ── UI ───────────────────────────────────────────────────────────────────
+
+	const schemaInput = document.getElementById('schema-input');
+	const depthLimitInput = document.getElementById('depth-limit');
+	const generateBtn = document.getElementById('generate-btn');
+	const errorBanner = document.getElementById('error-banner');
+	const statusMsg = document.getElementById('status-msg');
+
+	const tabs = ['queries', 'mutations', 'subscriptions'];
+
+	// Use a Map to avoid storing large query strings in DOM data attributes
+	const queryTextMap = new Map();
+
+	function renderResults(result) {
+		queryTextMap.clear();
+
+		tabs.forEach(tab => {
+			const container = document.getElementById(`tab-${tab}`);
+			const badge = document.getElementById(`badge-${tab}`);
+			const entries = Object.entries(result[tab] || {});
+			badge.textContent = entries.length;
+
+			if (!entries.length) {
+				container.innerHTML = `
+					<div class="empty-state">
+						<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+							<circle cx="12" cy="12" r="10"/>
+							<path d="M12 8v4m0 4h.01"/>
+						</svg>
+						<p>No ${tab} found in this schema</p>
+					</div>`;
+				return;
+			}
+
+			container.innerHTML = entries
+				.map(([name, queryStr], idx) => {
+					const key = `${tab}-${idx}`;
+					queryTextMap.set(key, queryStr);
+					return `
+					<div class="query-card">
+						<div class="query-card-header">
+							<span class="query-name">${escapeHtml(name)}</span>
+							<button class="copy-btn" data-key="${escapeHtml(key)}">Copy</button>
+						</div>
+						<pre class="query-code">${escapeHtml(queryStr)}</pre>
+					</div>`;
+				})
+				.join('');
+		});
+
+		// Attach copy handlers
+		document.querySelectorAll('.copy-btn').forEach(btn => {
+			btn.addEventListener('click', () => {
+				const text = queryTextMap.get(btn.dataset.key) || '';
+				navigator.clipboard.writeText(text).then(() => {
+					btn.textContent = 'Copied!';
+					btn.classList.add('copied');
+					setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+				});
+			});
+		});
+	}
+
+	function escapeHtml(str) {
+		return str
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#039;');
+	}
+
+	function showError(msg) {
+		errorBanner.textContent = msg;
+		errorBanner.classList.add('visible');
+		statusMsg.textContent = '';
+	}
+
+	function clearError() {
+		errorBanner.textContent = '';
+		errorBanner.classList.remove('visible');
+	}
+
+	function generate() {
+		clearError();
+		const schemaStr = schemaInput.value.trim();
+		const depthLimit = parseInt(depthLimitInput.value, 10) || 100;
+
+		if (!schemaStr) {
+			showError('Schema is empty – paste a GraphQL schema to get started.');
+			return;
+		}
+
+		let schema;
+		try {
+			schema = buildSchema(schemaStr);
+		} catch (err) {
+			showError(`Schema parse error: ${err.message}`);
+			return;
+		}
+
+		let result;
+		try {
+			result = generateAll(schema, depthLimit);
+		} catch (err) {
+			showError(`Generator error: ${err.message}`);
+			return;
+		}
+
+		renderResults(result);
+
+		const total = tabs.reduce((sum, t) => sum + Object.keys(result[t] || {}).length, 0);
+		statusMsg.textContent = `${total} operation${total !== 1 ? 's' : ''} generated`;
+	}
+
+	// Tab switching
+	document.querySelectorAll('.tab-btn').forEach(btn => {
+		btn.addEventListener('click', () => {
+			const tab = btn.dataset.tab;
+			document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+			document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+			btn.classList.add('active');
+			document.getElementById(`tab-${tab}`).classList.add('active');
+		});
+	});
+
+	generateBtn.addEventListener('click', generate);
+
+	// Also generate on Ctrl/Cmd + Enter in the textarea
+	schemaInput.addEventListener('keydown', e => {
+		if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate();
+	});
+
+	// Auto-generate on load with the sample schema
+	generate();
+</script>
+</body>
+</html>
