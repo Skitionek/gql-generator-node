@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/Skitionek/gql-generator-node/compare/v2.1.18...v2.2.0) (2026-03-27)
+
+
+### Features
+
+* Add CODEOWNERS file to auto-assign PRs ([7aaebd7](https://github.com/Skitionek/gql-generator-node/commit/7aaebd79e2b993fb1957fcc75df1f0d714ae0301))
+
 ## [2.1.18](https://github.com/Skitionek/gql-generator-node/compare/v2.1.17...v2.1.18) (2026-03-14)
 
 
