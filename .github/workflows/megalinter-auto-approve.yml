@@ -1,6 +1,7 @@
+---
 name: Auto-approve MegaLinter fix PRs
 
-on:
+"on":
   pull_request:
     types:
       - opened

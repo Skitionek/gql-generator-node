@@ -1,6 +1,7 @@
+---
 name: Copilot Auto-Fix on CI Failure
 
-on:
+"on":
   workflow_run:
     workflows:
       - Unit tests
