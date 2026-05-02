@@ -1,8 +1,13 @@
+---
 name: CI
-on:
+
+"on":
   push:
     branches:
       - master
+
+permissions: read-all
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -43,9 +48,9 @@ jobs:
           npx semantic-release
           AFTER_VERSION=$(node -p "require('./package.json').version")
           if [ "$BEFORE_VERSION" != "$AFTER_VERSION" ]; then
-            echo "new_release_published=true" >> $GITHUB_OUTPUT
+            echo "new_release_published=true" >> "$GITHUB_OUTPUT"
           else
-            echo "new_release_published=false" >> $GITHUB_OUTPUT
+            echo "new_release_published=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Setup Node.js for GitHub Package Registry
         if: steps.release.outputs.new_release_published == 'true'
