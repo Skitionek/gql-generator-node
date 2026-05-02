@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
       - run: npm ci
@@ -33,7 +33,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
       - name: Install dependencies
@@ -54,7 +54,7 @@ jobs:
           fi
       - name: Setup Node.js for GitHub Package Registry
         if: steps.release.outputs.new_release_published == 'true'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
           registry-url: 'https://npm.pkg.github.com'
