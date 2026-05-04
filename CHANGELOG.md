@@ -1,3 +1,9 @@
+## [Unreleased]
+
+### Changed
+
+- Spelling errors from cspell now raise lint warnings instead of errors
+
 # [2.3.0](https://github.com/Skitionek/gql-generator-node/compare/v2.2.0...v2.3.0) (2026-03-27)
 
 

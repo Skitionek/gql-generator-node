@@ -1,0 +1,5 @@
+# MegaLinter configuration
+# https://megalinter.io/latest/configuration/
+
+# Spelling errors should be reported as warnings, not errors.
+SPELL_CSPELL_DISABLE_ERRORS: true
