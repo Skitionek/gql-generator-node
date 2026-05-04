@@ -3,3 +3,4 @@
 
 # Spelling errors should be reported as warnings, not errors.
 SPELL_CSPELL_DISABLE_ERRORS: true
+SPELL_LYCHEE_DISABLE_ERRORS: true
