@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/Skitionek/gql-generator-node/#readme",
   "dependencies": {
-    "graphql": "^0.13.2"
+    "graphql": "^16.13.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",

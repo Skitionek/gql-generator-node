@@ -3,6 +3,7 @@
 ### Changed
 
 - Spelling errors from cspell now raise lint warnings instead of errors
+- Bump `graphql-tools` from 4.0.8 to 9.0.28 and update `graphql` peer dependency to `^16.0.0` for compatibility
 
 # [2.3.0](https://github.com/Skitionek/gql-generator-node/compare/v2.2.0...v2.3.0) (2026-03-27)
 
