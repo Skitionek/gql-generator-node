@@ -3,6 +3,7 @@
 ### Changed
 
 - Spelling errors from cspell now raise lint warnings instead of errors
+- Bump MegaLinter to v9.4.0
 - Upgraded `graphql-tools` from `^4.0.4` to `^9.0.28` to resolve peer dependency conflict with `graphql@^16`
 - Upgraded `eslint-config-prettier` from `^4.3.0` to `^10.1.8` to resolve peer dependency conflict with `eslint-plugin-prettier@^5`
 
