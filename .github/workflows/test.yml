@@ -25,7 +25,7 @@ jobs:
         run: npm run test:only
 
       - name: Notify Microsoft Teams
-        uses: Skitionek/notify-microsoft-teams@fe8fefdf6ec961a8c68ed158c88ac6a84fe59086
+        uses: Skitionek/notify-microsoft-teams@40873aa494cbb4fd3fea7773973df17d1358e48d
         if: failure()
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
