@@ -54,10 +54,10 @@ jobs:
           fi
           if [[ ${#LANGS[@]} -eq 1 ]]; then
             FLAVOR="${LANGS[0]}"
-            IMAGE="docker://ghcr.io/oxsecurity/megalinter-${FLAVOR}:v8"
+            IMAGE="docker://ghcr.io/oxsecurity/megalinter-${FLAVOR}:v9.4.0"
           else
             FLAVOR="all"
-            IMAGE="docker://ghcr.io/oxsecurity/megalinter:v8"
+            IMAGE="docker://ghcr.io/oxsecurity/megalinter:v9.4.0"
           fi
           echo "Detected flavor: $FLAVOR (matched languages: ${LANGS[*]:-none})"
           echo "flavor=$FLAVOR" >> "$GITHUB_OUTPUT"
@@ -156,7 +156,7 @@ jobs:
         if: >
           (github.event_name == 'pull_request' || github.event_name == 'push') &&
           always()
-        uses: github/codeql-action/upload-sarif@e46ed2cbd01164d986452f91f178727624ae40d7 # v3
+        uses: github/codeql-action/upload-sarif@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v3
         # continue-on-error so the job doesn't fail when SARIF wasn't produced
         # (e.g. no linting errors were found, or the reporter was not enabled).
         continue-on-error: true

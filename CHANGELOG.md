@@ -3,7 +3,10 @@
 ### Changed
 
 - Spelling errors from cspell now raise lint warnings instead of errors
-- Bump `graphql-tools` from 4.0.8 to 9.0.28 and update `graphql` peer dependency to `^16.0.0` for compatibility
+- Bump MegaLinter to v9.4.0
+- Upgraded `graphql-tools` from `^4.0.4` to `^9.0.28` to resolve peer dependency conflict with `graphql@^16`
+- Upgraded `graphql` from `^0.13.2` to `^16.0.0` for compatibility with `graphql-tools@9`
+- Upgraded `eslint-config-prettier` from `^4.3.0` to `^10.1.8` to resolve peer dependency conflict with `eslint-plugin-prettier@^5`
 
 # [2.3.0](https://github.com/Skitionek/gql-generator-node/compare/v2.2.0...v2.3.0) (2026-03-27)
 
