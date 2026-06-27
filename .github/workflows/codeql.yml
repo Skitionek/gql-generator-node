@@ -1,19 +1,21 @@
 ---
 name: "CodeQL Advanced"
 
-on:
+"on":
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
   schedule:
-    - cron: '36 0 * * 0'
+    - cron: "36 0 * * 0"
   workflow_dispatch: {}
+
+permissions: read-all
 
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     permissions:
       security-events: write
       packages: read
@@ -24,25 +26,25 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: actions
-          build-mode: none
-        - language: javascript-typescript
-          build-mode: none
-        
+          - language: actions
+            build-mode: none
+          - language: javascript-typescript
+            build-mode: none
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v7
+      - name: Checkout repository
+        uses: actions/checkout@v7
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v3
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v3
-      with:
-        category: "/language:${{matrix.language}}"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v3
+        with:
+          category: "/language:${{ matrix.language }}"
 
   rebase-dependabot:
     name: Auto-Rebase Dependabot PRs
@@ -54,11 +56,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          prs=$(gh api repos/$GITHUB_REPOSITORY/pulls \
+          prs=$(gh api "repos/$GITHUB_REPOSITORY/pulls" \
             --jq '.[] | select(.user.login == "dependabot[bot]" and .mergeable_state == "behind") | .number')
-          
-          for pr in $prs; do
+
+          while IFS= read -r pr; do
+            [ -z "$pr" ] && continue
             echo "Rebasing PR #$pr"
             gh pr comment "$pr" --body "@dependabot rebase"
-          done
-
+          done <<< "$prs"
