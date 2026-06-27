@@ -1,16 +1,17 @@
 ---
 name: "CodeQL Advanced"
 
-"on":
+on:
   push:
-    branches: ["master"]
+    branches: ["main"]
   pull_request:
-    branches: ["master"]
+    branches: ["main"]
   schedule:
     - cron: "36 0 * * 0"
-  workflow_dispatch: {}
+  workflow_dispatch:
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   analyze:
@@ -44,7 +45,7 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v3
         with:
-          category: "/language:${{ matrix.language }}"
+          category: "/language:${{matrix.language}}"
 
   rebase-dependabot:
     name: Auto-Rebase Dependabot PRs
@@ -58,9 +59,7 @@ jobs:
         run: |
           prs=$(gh api "repos/$GITHUB_REPOSITORY/pulls" \
             --jq '.[] | select(.user.login == "dependabot[bot]" and .mergeable_state == "behind") | .number')
-
-          while IFS= read -r pr; do
-            [ -z "$pr" ] && continue
+          for pr in $prs; do
             echo "Rebasing PR #$pr"
             gh pr comment "$pr" --body "@dependabot rebase"
-          done <<< "$prs"
+          done
