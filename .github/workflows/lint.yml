@@ -156,7 +156,7 @@ jobs:
         if: >
           (github.event_name == 'pull_request' || github.event_name == 'push') &&
           always()
-        uses: github/codeql-action/upload-sarif@99df26d4f13ea111d4ec1a7dddef6063f76b97e9 # v3
+        uses: github/codeql-action/upload-sarif@7188fc363630916deb702c7fdcf4e481b751f97a # v3
         # continue-on-error so the job doesn't fail when SARIF wasn't produced
         # (e.g. no linting errors were found, or the reporter was not enabled).
         continue-on-error: true
