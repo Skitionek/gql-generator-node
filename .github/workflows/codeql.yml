@@ -1,7 +1,7 @@
 ---
 name: "CodeQL Advanced"
 
-on:
+"on":
   push:
     branches: ["master"]
   pull_request:
@@ -37,12 +37,14 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@f205ea1c3313d32999d8d6a48b4f6530d4437b38 # v3
+        uses: >-
+          github/codeql-action/init@f205ea1c3313d32999d8d6a48b4f6530d4437b38
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@f205ea1c3313d32999d8d6a48b4f6530d4437b38 # v3
+        uses: >-
+          github/codeql-action/analyze@f205ea1c3313d32999d8d6a48b4f6530d4437b38
         with:
           category: "/language:${{matrix.language}}"
