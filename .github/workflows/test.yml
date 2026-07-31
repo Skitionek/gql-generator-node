@@ -16,7 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
       - name: Install dependencies
@@ -25,7 +25,7 @@ jobs:
         run: npm run test:only
 
       - name: Notify Microsoft Teams
-        uses: Skitionek/notify-microsoft-teams@307e10ff7f588d29ba8f360fb3c5a25fd0f85aa4
+        uses: Skitionek/notify-microsoft-teams@216b8b28967e7e89b0b64b81dc94aeae90e642ab
         if: failure()
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}

@@ -136,7 +136,7 @@ jobs:
 
       - name: Post PR Comment
         if: steps.fix_check.outputs.enabled == 'true'
-        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v2
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v2
         with:
           message: |
             MegaLinter has automatically applied linters fixes on this PR.
@@ -156,7 +156,7 @@ jobs:
         if: >
           (github.event_name == 'pull_request' || github.event_name == 'push') &&
           always()
-        uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v3
+        uses: github/codeql-action/upload-sarif@f205ea1c3313d32999d8d6a48b4f6530d4437b38 # v3
         # continue-on-error so the job doesn't fail when SARIF wasn't produced
         # (e.g. no linting errors were found, or the reporter was not enabled).
         continue-on-error: true
