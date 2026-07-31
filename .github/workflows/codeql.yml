@@ -46,20 +46,3 @@ jobs:
         uses: github/codeql-action/analyze@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v3
         with:
           category: "/language:${{matrix.language}}"
-
-  rebase-dependabot:
-    name: Auto-Rebase Dependabot PRs
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-    steps:
-      - name: Rebase Dependabot PRs
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          prs=$(gh api "repos/$GITHUB_REPOSITORY/pulls" \
-            --jq '.[] | select(.user.login == "dependabot[bot]" and .mergeable_state == "behind") | .number')
-          for pr in $prs; do
-            echo "Rebasing PR #$pr"
-            gh pr comment "$pr" --body "@dependabot rebase"
-          done
