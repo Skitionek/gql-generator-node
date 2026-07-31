@@ -34,16 +34,16 @@
   },
   "homepage": "https://github.com/Skitionek/gql-generator-node/#readme",
   "dependencies": {
+    "@babel/plugin-transform-class-properties": "^8.0.1",
+    "@babel/plugin-transform-object-rest-spread": "^8.0.1",
     "graphql": "^17.0.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.5",
-    "@babel/node": "^7.4.5",
-    "@babel/plugin-proposal-class-properties": "^7.4.4",
-    "@babel/plugin-proposal-decorators": "^7.4.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
-    "@babel/preset-env": "^7.4.5",
+    "@babel/cli": "^8.0.4",
+    "@babel/core": "^8.0.1",
+    "@babel/node": "^8.0.1",
+    "@babel/plugin-proposal-decorators": "^8.0.2",
+    "@babel/preset-env": "^8.0.2",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "babel-eslint": "^10.0.1",
@@ -92,15 +92,15 @@
       ]
     ],
     "plugins": [
-      "@babel/plugin-proposal-object-rest-spread",
+      "@babel/plugin-transform-object-rest-spread",
       [
         "@babel/plugin-proposal-decorators",
         {
-          "legacy": true
+          "version": "legacy"
         }
       ],
       [
-        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-transform-class-properties",
         {
           "loose": true
         }
