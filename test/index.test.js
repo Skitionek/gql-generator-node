@@ -1,11 +1,13 @@
 require('graphql-import-node');
 const typeDefs = require('./schemas/sampleTypeDef.graphql');
 const typeDefsWithoutMutation = require('./schemas/empty.graphql');
+const crossRefTypeDefs = require('./schemas/crossRefTypeDef.graphql');
 const makeExecutableSchema = require('graphql-tools').makeExecutableSchema;
 require('should');
 
 const schema = makeExecutableSchema({ typeDefs });
 const schemaWithoutMutation = makeExecutableSchema({ typeDefs: typeDefsWithoutMutation });
+const crossRefSchema = makeExecutableSchema({ typeDefs: crossRefTypeDefs });
 import { generateAll, generateQuery } from "../src";
 
 it('validate generated queries', async () => {
@@ -162,6 +164,16 @@ it('should return field name when field has no type (type is undefined)', async 
 				name: 'untypedField',
 				args: []
 			}
+		})
+	).toMatchSnapshot()
+);
+
+it('should expand sibling fields that reference the same type independently (issue #69)', async () =>
+	expect(
+		generateQuery({
+			field: crossRefSchema
+				.getQueryType()
+				.getFields().order
 		})
 	).toMatchSnapshot()
 );

@@ -54,7 +54,9 @@ export const generateQuery = ({
 		if (curType.getFields) {
 			const crossReferenceKey = `${parentName}To${field.name}Key`;
 			if (crossReferenceKeyList.indexOf(crossReferenceKey) !== -1 || curDepth > depthLimit) return '';
-			crossReferenceKeyList.push(crossReferenceKey);
+			// Use a per-branch copy so sibling fields that reference the same
+			// type are each expanded independently (fixes #69).
+			crossReferenceKeyList = [...crossReferenceKeyList, crossReferenceKey];
 			const children = curType.getFields();
 			childQuery = Object.entries(children);
 			if (skeleton && typeof skeleton === 'object') {
