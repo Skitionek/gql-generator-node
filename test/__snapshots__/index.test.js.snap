@@ -143,6 +143,45 @@ exports[`check field generator with skeleton 1`] = `
 
 exports[`check warnings for no mutations, query, subscription in schema 1`] = `{}`;
 
+exports[`should expand sibling fields that reference the same type independently (issue #69) 1`] = `
+"query order($id: Int!){
+    order(id: $id){
+        payment{
+            id
+            user{
+                id
+                fcmTokens{
+                    token
+                    lastSeen
+                }
+                invoiceAddress{
+                    customerName
+                    country
+                    city
+                    streetAddress
+                }
+            }
+        }
+        tipPayment{
+            id
+            user{
+                id
+                fcmTokens{
+                    token
+                    lastSeen
+                }
+                invoiceAddress{
+                    customerName
+                    country
+                    city
+                    streetAddress
+                }
+            }
+        }
+    }
+}"
+`;
+
 exports[`should return field name when field has no type (type is undefined) 1`] = `
 "query untypedField{
     untypedField
