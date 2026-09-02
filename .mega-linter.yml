@@ -4,3 +4,13 @@
 # Spelling errors should be reported as warnings, not errors.
 SPELL_CSPELL_DISABLE_ERRORS: true
 SPELL_LYCHEE_DISABLE_ERRORS: true
+
+# The project uses tabs (enforced by eslint config); standard assumes
+# 2-space / no-semicolon style, which conflicts.  Disable it so eslint
+# is the single JS linter of record.
+DISABLE_LINTERS:
+  - JAVASCRIPT_STANDARD
+
+# Test fixture schemas are intentionally minimal and don't need API-level
+# descriptions, alphabetical sorting, or Relay compliance.
+GRAPHQL_GRAPHQL_SCHEMA_LINTER_FILTER_REGEX_EXCLUDE: "(test/)"
