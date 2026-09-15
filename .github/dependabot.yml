@@ -11,6 +11,10 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "ci"
+    groups:
+      codeql-action:
+        patterns:
+          - "github/codeql-action/*"
 
   - package-ecosystem: npm
     directory: "/"
