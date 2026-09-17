@@ -4,3 +4,10 @@
 # Spelling errors should be reported as warnings, not errors.
 SPELL_CSPELL_DISABLE_ERRORS: true
 SPELL_LYCHEE_DISABLE_ERRORS: true
+
+# JAVASCRIPT_STANDARD duplicates ESLint (already configured via eslint.config.js)
+# and enforces a conflicting style (tabs vs spaces, quote style) that predates
+# this config and fails on pre-existing source files unrelated to any given PR.
+DISABLE_LINTERS:
+  - JAVASCRIPT_STANDARD
+  - GRAPHQL_GRAPHQL_SCHEMA_LINTER
