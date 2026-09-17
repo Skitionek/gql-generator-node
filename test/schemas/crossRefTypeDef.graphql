@@ -1,0 +1,31 @@
+type Query {
+    order(id: Int!): OrderDTO!
+}
+
+type OrderDTO {
+    payment: PaymentDTO!
+    tipPayment: PaymentDTO!
+}
+
+type PaymentDTO {
+    id: Float!
+    user: User!
+}
+
+type User {
+    id: Int!
+    fcmTokens: [FCMToken!]
+    invoiceAddress: UserInvoiceAddressInput
+}
+
+type FCMToken {
+    token: String!
+    lastSeen: String!
+}
+
+type UserInvoiceAddressInput {
+    customerName: String!
+    country: String!
+    city: String!
+    streetAddress: String!
+}
