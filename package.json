@@ -46,12 +46,10 @@
     "@babel/preset-env": "^8.0.2",
     "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/git": "^11.0.1",
-    "babel-eslint": "^10.0.1",
     "cross-env": "^10.1.0",
     "dotenv": "^18.0.1",
     "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-jest": "^29.15.2",
     "eslint-plugin-prettier": "^5.5.5",
     "graphql-import-node": "^0.0.5",
@@ -106,63 +104,6 @@
         }
       ]
     ]
-  },
-  "eslintConfig": {
-    "extends": [
-      "eslint-config-prettier",
-      "eslint-config-uber-es2015",
-      "prettier"
-    ],
-    "env": {
-      "es6": true,
-      "node": true,
-      "jest/globals": true
-    },
-    "parser": "babel-eslint",
-    "plugins": [
-      "babel",
-      "prettier",
-      "jest"
-    ],
-    "rules": {
-      "complexity": "off",
-      "valid-jsdoc": 0,
-      "no-var": 0,
-      "max-len": 0,
-      "prefer-spread": 1,
-      "prefer-template": 1,
-      "quote-props": 1,
-      "spaced-comment": 1,
-      "max-params": 0,
-      "no-multiple-empty-lines": 1,
-      "no-process-env": 0,
-      "no-inline-comments": 0,
-      "no-invalid-this": 0,
-      "no-unused-expressions": 0,
-      "camelcase": 0,
-      "consistent-return": 0,
-      "comma-dangle": 1,
-      "no-magic-numbers": [
-        "error",
-        {
-          "ignore": [
-            -1,
-            0,
-            1,
-            2,
-            100
-          ],
-          "enforceConst": true
-        }
-      ],
-      "indent": [
-        "error",
-        "tab"
-      ],
-      "func-names": "off",
-      "max-statements": "off",
-      "no-console": "off"
-    }
   },
   "jest": {
     "transform": {

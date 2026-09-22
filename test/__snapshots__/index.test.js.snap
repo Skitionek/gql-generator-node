@@ -71,7 +71,7 @@ exports[`check field generator with skeleton - multiple fields with same query p
 }"
 `;
 
-exports[`check field generator with skeleton - multiple fields with same query parameter name 2`] = `
+exports[`check field generator with skeleton - multiple fields with same query parameter name and duplicateArgCounts 1`] = `
 "query setConfig($setConfig_level_domain: String!, $setConfig_lastSeen_domain: String!, $setConfig_theme_domain: String!, $prefs: PrefsInput){
     setConfig(prefs: $prefs){
         language
