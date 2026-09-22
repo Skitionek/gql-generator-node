@@ -11,3 +11,7 @@ SPELL_LYCHEE_DISABLE_ERRORS: true
 DISABLE_LINTERS:
   - JAVASCRIPT_STANDARD
   - GRAPHQL_GRAPHQL_SCHEMA_LINTER
+
+# Test fixture schemas are intentionally minimal and don't need API-level
+# descriptions, alphabetical sorting, or Relay compliance.
+GRAPHQL_GRAPHQL_SCHEMA_LINTER_FILTER_REGEX_EXCLUDE: "(test/)"
