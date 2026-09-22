@@ -4,8 +4,6 @@
 	- Created:  2019-06-06
 */
 
-export const QUERY_KINDS = [
-	'Mutation', 'Query', 'Subscription'
-];
+export const QUERY_KINDS = ["Mutation", "Query", "Subscription"];
 
-export const MODULE_NAME = 'gql-generator-node';
+export const MODULE_NAME = "gql-generator-node";

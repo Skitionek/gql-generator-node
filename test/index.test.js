@@ -1,59 +1,55 @@
-require('graphql-import-node');
-const typeDefs = require('./schemas/sampleTypeDef.graphql');
-const typeDefsWithoutMutation = require('./schemas/empty.graphql');
-const crossRefTypeDefs = require('./schemas/crossRefTypeDef.graphql');
-const makeExecutableSchema = require('graphql-tools').makeExecutableSchema;
-require('should');
+require("graphql-import-node");
+const typeDefs = require("./schemas/sampleTypeDef.graphql");
+const typeDefsWithoutMutation = require("./schemas/empty.graphql");
+const crossRefTypeDefs = require("./schemas/crossRefTypeDef.graphql");
+const makeExecutableSchema = require("graphql-tools").makeExecutableSchema;
+require("should");
 
 const schema = makeExecutableSchema({ typeDefs });
-const schemaWithoutMutation = makeExecutableSchema({ typeDefs: typeDefsWithoutMutation });
+const schemaWithoutMutation = makeExecutableSchema({
+	typeDefs: typeDefsWithoutMutation
+});
 const crossRefSchema = makeExecutableSchema({ typeDefs: crossRefTypeDefs });
 import { generateAll, generateQuery } from "../src";
 
-it('validate generated queries', async () => {
+it("validate generated queries", async () => {
 	generateAll(schema, undefined, ({ args }) => {
 		const o = {};
-		(args || []).forEach(arg => {
+		(args || []).forEach((arg) => {
 			o[arg.name] = arg;
 		});
 		return o;
-	}).mutations.signin.indexOf('signin').should.not.equal(-1)
+	})
+		.mutations.signin.indexOf("signin")
+		.should.not.equal(-1);
 });
 
-it('limt depth', async () =>
-	generateAll(schema, 1).mutations.signup.indexOf('createdAt').should.equal(-1)
-);
+it("limt depth", async () =>
+	generateAll(schema, 1)
+		.mutations.signup.indexOf("createdAt")
+		.should.equal(-1));
 
-it('check field generator', async () =>
+it("check field generator", async () =>
 	expect(
 		generateQuery({
-			field: schema
-				.getQueryType()
-				.getFields().user
+			field: schema.getQueryType().getFields().user
 		})
-	).toMatchSnapshot()
-);
+	).toMatchSnapshot());
 
-it('check field generator with skeleton', async () =>
+it("check field generator with skeleton", async () =>
 	expect(
 		generateQuery({
-			field: schema
-				.getQueryType()
-				.getFields().user,
+			field: schema.getQueryType().getFields().user,
 			skeleton: {
-				email:
-					true
+				email: true
 			}
 		})
-	).toMatchSnapshot()
-);
+	).toMatchSnapshot());
 
-it('check field generator with skeleton - nested types', async () =>
+it("check field generator with skeleton - nested types", async () =>
 	expect(
 		generateQuery({
-			field: schema
-				.getQueryType()
-				.getFields().user,
+			field: schema.getQueryType().getFields().user,
 			skeleton: {
 				email: true,
 				context: {
@@ -61,15 +57,12 @@ it('check field generator with skeleton - nested types', async () =>
 				}
 			}
 		})
-	).toMatchSnapshot()
-);
+	).toMatchSnapshot());
 
-it('check field generator with skeleton - unions', async () =>
+it("check field generator with skeleton - unions", async () =>
 	expect(
 		generateQuery({
-			field: schema
-				.getQueryType()
-				.getFields().user,
+			field: schema.getQueryType().getFields().user,
 			skeleton: {
 				email: true,
 				details: {
@@ -77,15 +70,12 @@ it('check field generator with skeleton - unions', async () =>
 				}
 			}
 		})
-	).toMatchSnapshot()
-);
+	).toMatchSnapshot());
 
-it('check field generator with skeleton - circular', async () =>
+it("check field generator with skeleton - circular", async () =>
 	expect(
 		generateQuery({
-			field: schema
-				.getQueryType()
-				.getFields().user,
+			field: schema.getQueryType().getFields().user,
 			skeleton: {
 				email: true,
 				details: {
@@ -96,84 +86,63 @@ it('check field generator with skeleton - circular', async () =>
 				}
 			}
 		})
-	).toMatchSnapshot()
-);
+	).toMatchSnapshot());
 
-it('check field generator with skeleton - multiple fields with same query parameter name', async () =>
+it("check field generator with skeleton - multiple fields with same query parameter name", async () =>
 	expect(
 		generateQuery({
-			field: schema
-				.getMutationType()
-				.getFields().setConfig
+			field: schema.getMutationType().getFields().setConfig
 		})
-	).toMatchSnapshot()
-);
+	).toMatchSnapshot());
 
-it('check field generator with skeleton - multiple fields with same query parameter name', async () =>
+it("check field generator with skeleton - multiple fields with same query parameter name and duplicateArgCounts", async () =>
 	expect(
 		generateQuery({
-			field: schema
-				.getMutationType()
-				.getFields().setConfig,
+			field: schema.getMutationType().getFields().setConfig,
 			duplicateArgCounts: {
 				setConfig_level_domain: "level_domain",
 				setConfig_lastSeen_domain: "lastSeen_domain",
 				setConfig_theme_domain: "theme_domain"
 			}
 		})
-	).toMatchSnapshot()
-);
+	).toMatchSnapshot());
 
-it('check field generator with skeleton - true expands all sub-fields', async () =>
+it("check field generator with skeleton - true expands all sub-fields", async () =>
 	expect(
 		generateQuery({
-			field: schema
-				.getQueryType()
-				.getFields().user,
+			field: schema.getQueryType().getFields().user,
 			skeleton: {
 				context: true
 			}
 		})
-	).toMatchSnapshot()
-);
+	).toMatchSnapshot());
 
-it('check field generator for non-empty array ([]!)', async () =>
+it("check field generator for non-empty array ([]!)", async () =>
 	expect(
 		generateQuery({
-			field: schema
-				.getQueryType()
-				.getFields().users,
+			field: schema.getQueryType().getFields().users,
 			skeleton: {
-				email:
-					true
+				email: true
 			}
 		})
-	).toMatchSnapshot()
-);
+	).toMatchSnapshot());
 
-it('check warnings for no mutations, query, subscription in schema', async () =>
-	expect(
-		generateAll(schemaWithoutMutation)
-	).toMatchSnapshot()
-);
+it("check warnings for no mutations, query, subscription in schema", async () =>
+	expect(generateAll(schemaWithoutMutation)).toMatchSnapshot());
 
-it('should return field name when field has no type (type is undefined)', async () =>
+it("should return field name when field has no type (type is undefined)", async () =>
 	expect(
 		generateQuery({
 			field: {
-				name: 'untypedField',
+				name: "untypedField",
 				args: []
 			}
 		})
-	).toMatchSnapshot()
-);
+	).toMatchSnapshot());
 
-it('should expand sibling fields that reference the same type independently (issue #69)', async () =>
+it("should expand sibling fields that reference the same type independently (issue #69)", async () =>
 	expect(
 		generateQuery({
-			field: crossRefSchema
-				.getQueryType()
-				.getFields().order
+			field: crossRefSchema.getQueryType().getFields().order
 		})
-	).toMatchSnapshot()
-);
+	).toMatchSnapshot());

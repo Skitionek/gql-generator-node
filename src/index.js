@@ -1,4 +1,9 @@
-import { getArgsToVarsStr, getFieldArgsDict, getVarsToTypesStr, moduleConsole } from "./utils";
+import {
+	getArgsToVarsStr,
+	getFieldArgsDict,
+	getVarsToTypesStr,
+	moduleConsole
+} from "./utils";
 
 /**
  * Generate the query for the specified field
@@ -9,13 +14,12 @@ import { getArgsToVarsStr, getFieldArgsDict, getVarsToTypesStr, moduleConsole } 
  * @param dedupe function to resolve query variables conflicts
  */
 export const generateQuery = ({
-	                              field: rootField,
-	                              skeleton: rootSkeleton,
-	                              kind = 'Query',
-	                              depthLimit,
-	                              dedupe = getFieldArgsDict
+	field: rootField,
+	skeleton: rootSkeleton,
+	kind = "Query",
+	depthLimit,
+	dedupe = getFieldArgsDict
 }) => {
-
 	/**
 	 * Generate the query for the specified field
 	 * @param field executable schema representative
@@ -28,97 +32,109 @@ export const generateQuery = ({
 	 * @param path
 	 */
 	const generateQueryRecursive = ({
-		                                field,
-		                                skeleton,
-		                                parentName,
-		                                argumentsDict = {},
-		                                duplicateArgCounts = {},
-		                                crossReferenceKeyList = [], // [`${parentName}To${curName}Key`]
-		                                curDepth = 1,
-		                                path = []
-	                                }) => {
+		field,
+		skeleton,
+		parentName,
+		argumentsDict = {},
+		duplicateArgCounts = {},
+		crossReferenceKeyList = [], // [`${parentName}To${curName}Key`]
+		curDepth = 1,
+		path = []
+	}) => {
 		let curType = field.type;
 
 		if (curType === undefined) {
 			return {
-				queryStr: `${'    '.repeat(curDepth)}${field.name}`,
+				queryStr: `${"    ".repeat(curDepth)}${field.name}`,
 				argumentsDict
 			};
 		}
 
 		while (curType.ofType) curType = curType.ofType;
 
-		let queryStr = '';
-		let childQuery = '';
+		let queryStr = "";
+		let childQuery = "";
 
 		if (curType.getFields) {
 			const crossReferenceKey = `${parentName}To${field.name}Key`;
-			if (crossReferenceKeyList.indexOf(crossReferenceKey) !== -1 || curDepth > depthLimit) return '';
+			if (
+				crossReferenceKeyList.indexOf(crossReferenceKey) !== -1 ||
+				curDepth > depthLimit
+			)
+				return "";
 			// Use a per-branch copy so sibling fields that reference the same
 			// type are each expanded independently (fixes #69).
 			crossReferenceKeyList = [...crossReferenceKeyList, crossReferenceKey];
 			const children = curType.getFields();
 			childQuery = Object.entries(children);
-			if (skeleton && typeof skeleton === 'object') {
+			if (skeleton && typeof skeleton === "object") {
 				const skeletonKeys = Object.keys(skeleton);
-				childQuery = childQuery
-					.filter(([key]) => skeletonKeys.indexOf(key) !== -1)
+				childQuery = childQuery.filter(
+					([key]) => skeletonKeys.indexOf(key) !== -1
+				);
 			} else skeleton = {};
 			childQuery = childQuery
-				.map(([key, childField]) => generateQueryRecursive({
-					field: childField,
-					skeleton: skeleton[key],
-					parentName: field.name,
-					argumentsDict,
-					duplicateArgCounts,
-					crossReferenceKeyList,
-					curDepth: curDepth + 1,
-					path: path.concat(field.name)
-				}).queryStr)
-				.filter(cur => cur)
-				.join('\n');
-		}
-
-		if (!(curType.getFields && !childQuery)) {
-			queryStr = `${'    '.repeat(curDepth)}${field.name}`;
-			if (field.args.length > 0) {
-				const dict = dedupe(field, duplicateArgCounts, argumentsDict, path);
-				Object.assign(argumentsDict, dict);
-				queryStr += `(${getArgsToVarsStr(dict)})`;
-			}
-			if (childQuery) {
-				queryStr += `{\n${childQuery}\n${'    '.repeat(curDepth)}}`;
-			}
-		}
-
-		/* Union types */
-		if (curType.astNode && curType.astNode.kind === 'UnionTypeDefinition') {
-			const types = curType.getTypes();
-			if (types && types.length) {
-				const indent = `${'    '.repeat(curDepth)}`;
-				const fragIndent = `${'    '.repeat(curDepth + 1)}`;
-				queryStr += '{\n';
-
-				types.forEach(type => {
-					let unionChildQuery = Object.entries(type.getFields());
-					if (skeleton && Object.keys(skeleton).length) {
-						const skeletonKeys = Object.keys(skeleton);
-						unionChildQuery = unionChildQuery
-							.filter(([key]) => skeletonKeys.indexOf(key) !== -1)
-					} else skeleton = {};
-					unionChildQuery = unionChildQuery
-						.map(([key, childField]) => generateQueryRecursive({
+				.map(
+					([key, childField]) =>
+						generateQueryRecursive({
 							field: childField,
 							skeleton: skeleton[key],
 							parentName: field.name,
 							argumentsDict,
 							duplicateArgCounts,
 							crossReferenceKeyList,
-							curDepth: curDepth + 2,
+							curDepth: curDepth + 1,
 							path: path.concat(field.name)
-						}).queryStr)
-						.filter(cur => cur)
-						.join('\n');
+						}).queryStr
+				)
+				.filter((cur) => cur)
+				.join("\n");
+		}
+
+		if (!(curType.getFields && !childQuery)) {
+			queryStr = `${"    ".repeat(curDepth)}${field.name}`;
+			if (field.args.length > 0) {
+				const dict = dedupe(field, duplicateArgCounts, argumentsDict, path);
+				Object.assign(argumentsDict, dict);
+				queryStr += `(${getArgsToVarsStr(dict)})`;
+			}
+			if (childQuery) {
+				queryStr += `{\n${childQuery}\n${"    ".repeat(curDepth)}}`;
+			}
+		}
+
+		/* Union types */
+		if (curType.astNode && curType.astNode.kind === "UnionTypeDefinition") {
+			const types = curType.getTypes();
+			if (types && types.length) {
+				const indent = `${"    ".repeat(curDepth)}`;
+				const fragIndent = `${"    ".repeat(curDepth + 1)}`;
+				queryStr += "{\n";
+
+				types.forEach((type) => {
+					let unionChildQuery = Object.entries(type.getFields());
+					if (skeleton && Object.keys(skeleton).length) {
+						const skeletonKeys = Object.keys(skeleton);
+						unionChildQuery = unionChildQuery.filter(
+							([key]) => skeletonKeys.indexOf(key) !== -1
+						);
+					} else skeleton = {};
+					unionChildQuery = unionChildQuery
+						.map(
+							([key, childField]) =>
+								generateQueryRecursive({
+									field: childField,
+									skeleton: skeleton[key],
+									parentName: field.name,
+									argumentsDict,
+									duplicateArgCounts,
+									crossReferenceKeyList,
+									curDepth: curDepth + 2,
+									path: path.concat(field.name)
+								}).queryStr
+						)
+						.filter((cur) => cur)
+						.join("\n");
 					queryStr += `${fragIndent}... on ${type.name} {\n${unionChildQuery}\n${fragIndent}}\n`;
 				});
 				queryStr += `${indent}}`;
@@ -127,27 +143,34 @@ export const generateQuery = ({
 		return { queryStr, argumentsDict };
 	};
 
-	return wrapQueryIntoKindDeclaration(kind, rootField, generateQueryRecursive({
-		field: rootField,
-		skeleton: rootSkeleton,
-		parentName: kind
-	}));
+	return wrapQueryIntoKindDeclaration(
+		kind,
+		rootField,
+		generateQueryRecursive({
+			field: rootField,
+			skeleton: rootSkeleton,
+			parentName: kind
+		})
+	);
 };
 
 function wrapQueryIntoKindDeclaration(kind, alias, queryResult) {
 	const varsToTypesStr = getVarsToTypesStr(queryResult.argumentsDict);
 	const query = queryResult.queryStr;
-	return `${kind.toLowerCase()} ${alias.name}${varsToTypesStr ? `(${varsToTypesStr})` : ''}{\n${query}\n}`;
+	return `${kind.toLowerCase()} ${alias.name}${varsToTypesStr ? `(${varsToTypesStr})` : ""}{\n${query}\n}`;
 }
 
-export function generateAll(schema, depthLimit = 100, dedupe = getFieldArgsDict) {
-
+export function generateAll(
+	schema,
+	depthLimit = 100,
+	dedupe = getFieldArgsDict
+) {
 	const result = {};
 
 	const QUERY_KINDS_MAP = {
-		Query: 'queries',
-		Mutation: 'mutations',
-		Subscription: 'subscriptions'
+		Query: "queries",
+		Mutation: "mutations",
+		Subscription: "subscriptions"
 	};
 
 	/**
@@ -156,31 +179,38 @@ export function generateAll(schema, depthLimit = 100, dedupe = getFieldArgsDict)
 	 * @param description description of the current object
 	 */
 	const addToResult = (obj, description) => {
-		const kind = QUERY_KINDS_MAP[description] ||
+		const kind =
+			QUERY_KINDS_MAP[description] ||
 			moduleConsole.warn(`unknown description string: ${description}`) ||
 			`${String(description).toLowerCase()}s`;
 		result[kind] = {};
 		Object.entries(obj).forEach(([type, field]) => {
-			result[kind][type] = generateQuery({ field, kind: description, parentName: description, depthLimit, dedupe });
+			result[kind][type] = generateQuery({
+				field,
+				kind: description,
+				parentName: description,
+				depthLimit,
+				dedupe
+			});
 		});
 	};
 
 	if (schema.getMutationType()) {
-		addToResult(schema.getMutationType().getFields(), 'Mutation');
+		addToResult(schema.getMutationType().getFields(), "Mutation");
 	} else {
-		moduleConsole.warn('No mutation type found in your schema');
+		moduleConsole.warn("No mutation type found in your schema");
 	}
 
 	if (schema.getQueryType()) {
-		addToResult(schema.getQueryType().getFields(), 'Query');
+		addToResult(schema.getQueryType().getFields(), "Query");
 	} else {
-		moduleConsole.warn('No query type found in your schema');
+		moduleConsole.warn("No query type found in your schema");
 	}
 
 	if (schema.getSubscriptionType()) {
-		addToResult(schema.getSubscriptionType().getFields(), 'Subscription');
+		addToResult(schema.getSubscriptionType().getFields(), "Subscription");
 	} else {
-		moduleConsole.warn('No subscription type found in your schema');
+		moduleConsole.warn("No subscription type found in your schema");
 	}
 
 	return result;
