@@ -1,6 +1,12 @@
 ---
 # Dependabot configuration
 # https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+#
+# `groups` below exist to keep tightly-coupled dependencies in a single PR.
+# Packages in the same group pin each other via peer dependencies or are
+# released in lockstep, so bumping one alone produces a broken build or a
+# peer-dependency conflict.
+# Add a package to an existing group rather than letting it be bumped solo.
 
 version: 2
 updates:
@@ -11,6 +17,20 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "ci"
+    groups:
+      # init/analyze/upload-sarif are three entrypoints of one action; they
+      # must run at the same version across the workflows that call them.
+      codeql-action:
+        patterns:
+          - "github/codeql-action/*"
+      # configure/upload-artifact/deploy form one Pages deployment handshake:
+      # deploy-pages only accepts the artifact format the matching
+      # upload-pages-artifact produces.
+      pages-actions:
+        patterns:
+          - "actions/configure-pages"
+          - "actions/upload-pages-artifact"
+          - "actions/deploy-pages"
 
   - package-ecosystem: npm
     directory: "/"
@@ -18,3 +38,35 @@ updates:
       interval: weekly
     commit-message:
       prefix: "build"
+    groups:
+      # @babel/cli, node, preset-env and the transform plugins all peer on
+      # @babel/core and ship from one monorepo release.
+      babel:
+        patterns:
+          - "@babel/*"
+      # graphql-tag/graphql-tools/graphql-import-node peer on the graphql
+      # major, and a second graphql copy in the tree breaks instanceof checks.
+      graphql:
+        patterns:
+          - graphql
+          - graphql-*
+      # semantic-release plugins declare a peerDependency on the
+      # semantic-release major.
+      semantic-release:
+        patterns:
+          - "@semantic-release/*"
+          - semantic-release
+      # ESLint config/plugin packages peer on the eslint major; prettier and
+      # its bridge packages have to move with it.
+      # NOTE: eslint-plugin-jest matches here rather than in `jest` below —
+      # first match wins — which is right, it tracks the eslint major.
+      eslint:
+        patterns:
+          - eslint
+          - eslint-*
+          - prettier
+      # jest reporters and the babel bridge track the jest major.
+      jest:
+        patterns:
+          - jest
+          - jest-*
